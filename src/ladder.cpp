@@ -49,7 +49,7 @@ vector<string> generate_word_ladder(const string& begin_word,
                                     const string& end_word,
                                     const set<string>& word_list) {
     if (begin_word == end_word) {
-        return {begin_word};
+        return {};
     }
 
     queue<vector<string>> ladder_queue;
@@ -59,55 +59,21 @@ vector<string> generate_word_ladder(const string& begin_word,
     visited.insert(begin_word);
 
     while (!ladder_queue.empty()) {
-        auto current_ladder = ladder_queue.front();
+        vector<string> current_ladder = ladder_queue.front();
         ladder_queue.pop();
-        string last_word = current_ladder.back();
+        const string& last_word = current_ladder.back();
 
         if (last_word == end_word) {
             return current_ladder;
         }
 
-        // Generate all possible next words with one edit
-        vector<string> next_words;
-        int len = last_word.length();
-
-        // Substitutions
-        for (int i = 0; i < len; ++i) {
-            string temp = last_word;
-            for (char c = 'a'; c <= 'z'; ++c) {
-                temp[i] = c;
-                if (temp != last_word && word_list.count(temp) && !visited.count(temp)) {
-                    next_words.push_back(temp);
-                    visited.insert(temp);
-                }
+        for (const auto& candidate : word_list) {
+            if (visited.find(candidate) == visited.end() && is_adjacent(last_word, candidate)) {
+                visited.insert(candidate);
+                vector<string> new_ladder = current_ladder;
+                new_ladder.push_back(candidate);
+                ladder_queue.push(new_ladder);
             }
-        }
-
-        // Insertions
-        for (int i = 0; i <= len; ++i) {
-            for (char c = 'a'; c <= 'z'; ++c) {
-                string temp = last_word.substr(0, i) + c + last_word.substr(i);
-                if (word_list.count(temp) && !visited.count(temp)) {
-                    next_words.push_back(temp);
-                    visited.insert(temp);
-                }
-            }
-        }
-
-        // Deletions
-        for (int i = 0; i < len; ++i) {
-            string temp = last_word.substr(0, i) + last_word.substr(i + 1);
-            if (!temp.empty() && word_list.count(temp) && !visited.count(temp)) {
-                next_words.push_back(temp);
-                visited.insert(temp);
-            }
-        }
-
-        // Add new ladders to the queue
-        for (const string& word : next_words) {
-            vector<string> new_ladder = current_ladder;
-            new_ladder.push_back(word);
-            ladder_queue.push(new_ladder);
         }
     }
 
@@ -136,12 +102,13 @@ void print_word_ladder(const vector<string>& ladder) {
     cout << "Word ladder found: ";
     for (size_t i = 0; i < ladder.size(); ++i) {
         cout << ladder[i];
-        if (i < ladder.size() - 1) {
+        if (i < ladder.size()) {
             cout << " ";
         }
     }
     cout << endl;
 }
+
 void verify_word_ladder() {
     set<string> word_list;
     load_words(word_list, "../src/words.txt");
