@@ -21,12 +21,12 @@ int main(int argc, char* argv[]) {
         vector<int> path = extract_shortest_path(dist, previous, v);
 
         if (!path.empty()) {
-            for (int i = 0; i < (int)path.size(); i++) {
-                cout << path[i];
-                if (i < (int)path.size() - 1) cout << " ";
-            }
-            cout << endl;
-            cout << "Total cost is " << dist[v] << endl;
+           for (int i = 0; i < (int)path.size(); i++) {
+    cout << path[i];
+    cout << " "; // Add space after each element
+ }
+  cout << endl;
+         cout << "Total cost is " << dist[v] << endl;
         } else {
             cout << v << " is unreachable from 0." << endl;
         }
