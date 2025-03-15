@@ -21,10 +21,9 @@ int main(int argc, char* argv[]) {
         vector<int> path = extract_shortest_path(dist, previous, v);
 
         if (!path.empty()) {
-           for (int i = 0; i < (int)path.size(); i++) {
-    cout << path[i];
-    cout << " "; // Add space after each element
- }
+      for (int i = 0; i < (int)path.size(); i++) {
+    cout << path[i] << " ";
+}
   cout << endl;
          cout << "Total cost is " << dist[v] << endl;
         } else {
