@@ -17,14 +17,17 @@ int main(int argc, char* argv[]) {
     vector<int> previous;
     vector<int> dist = dijkstra_shortest_path(G, 0, previous);
 
-    for (int v = 0; v < G.numVertices; v++) {
-        vector<int> path = extract_shortest_path(dist, previous, v);
+for (int v = 0; v < G.numVertices; v++) {
+    vector<int> path = extract_shortest_path(dist, previous, v);
 
-        if (!path.empty()) {
-for (int i = 0; i < (int)path.size(); i++) {
-    cout << path[i];
-    if (i < (int)path.size() - 1) {
-        cout << " ";
+    if (!path.empty()) {
+        for (int i = 0; i < (int)path.size(); i++) {
+            cout << path[i] << " "; // Add space after every element
+        }
+        cout << endl; // Newline after the trailing space
+        cout << "Total cost is " << dist[v] << endl;
+    } else {
+        cout << v << " is unreachable from 0." << endl;
     }
 }
 cout << endl;
