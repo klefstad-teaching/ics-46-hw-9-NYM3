@@ -22,9 +22,12 @@ for (int v = 0; v < G.numVertices; v++) {
 
     if (!path.empty()) {
         for (int i = 0; i < (int)path.size(); i++) {
-            cout << path[i] << " "; // Add space after every element
+            cout << path[i];
+            if (i < (int)path.size() - 1) { // Only add space between elements
+                cout << " ";
+            }
         }
-        cout << endl; // Newline after the trailing space
+        cout << endl; // No trailing space
         cout << "Total cost is " << dist[v] << endl;
     } else {
         cout << v << " is unreachable from 0." << endl;
