@@ -59,21 +59,55 @@ vector<string> generate_word_ladder(const string& begin_word,
     visited.insert(begin_word);
 
     while (!ladder_queue.empty()) {
-        vector<string> current_ladder = ladder_queue.front();
+        auto current_ladder = ladder_queue.front();
         ladder_queue.pop();
-        const string& last_word = current_ladder.back();
+        string last_word = current_ladder.back();
 
         if (last_word == end_word) {
             return current_ladder;
         }
 
-        for (const auto& candidate : word_list) {
-            if (visited.find(candidate) == visited.end() && is_adjacent(last_word, candidate)) {
-                visited.insert(candidate);
-                vector<string> new_ladder = current_ladder;
-                new_ladder.push_back(candidate);
-                ladder_queue.push(new_ladder);
+        // Generate all possible mutations (substitutions, insertions, deletions)
+        vector<string> next_words;
+        int len = last_word.length();
+
+        // Substitutions
+        for (int i = 0; i < len; ++i) {
+            string temp = last_word;
+            for (char c = 'a'; c <= 'z'; ++c) {
+                temp[i] = c;
+                if (temp != last_word && word_list.count(temp) && !visited.count(temp)) {
+                    next_words.push_back(temp);
+                    visited.insert(temp);
+                }
             }
+        }
+
+        // Insertions
+        for (int i = 0; i <= len; ++i) {
+            for (char c = 'a'; c <= 'z'; ++c) {
+                string temp = last_word.substr(0, i) + c + last_word.substr(i);
+                if (word_list.count(temp) && !visited.count(temp)) {
+                    next_words.push_back(temp);
+                    visited.insert(temp);
+                }
+            }
+        }
+
+        // Deletions
+        for (int i = 0; i < len; ++i) {
+            string temp = last_word.substr(0, i) + last_word.substr(i + 1);
+            if (!temp.empty() && word_list.count(temp) && !visited.count(temp)) {
+                next_words.push_back(temp);
+                visited.insert(temp);
+            }
+        }
+
+        // Add new ladders to the queue
+        for (const string& word : next_words) {
+            vector<string> new_ladder = current_ladder;
+            new_ladder.push_back(word);
+            ladder_queue.push(new_ladder);
         }
     }
 
@@ -96,7 +130,7 @@ void load_words(set<string> & word_list, const string& file_name) {
 
 void print_word_ladder(const vector<string>& ladder) {
     if (ladder.empty()) {
-        cout << "No ladder found." << endl;
+        cout << "No word ladder found.\n";
         return;
     }
     cout << "Word ladder found: ";
